@@ -21,24 +21,24 @@ void setup()
 
   Serial.println("Tx");
 
-  pinMode(LEDPIN, OUTPUT);  
+  pinMode(LEDPIN, OUTPUT);
 
-  
+
 
   Serial.println("TxOk");
 
   dht.begin();
 
   ELECHOUSE_cc1101.Init();
-  
-  for(int i=0;i<5;i++)
+
+  for (int i = 0; i < 5; i++)
   {
-     digitalWrite(LEDPIN, HIGH); 
+    digitalWrite(LEDPIN, HIGH);
     delay(100);
-    digitalWrite(LEDPIN, LOW); 
+    digitalWrite(LEDPIN, LOW);
     delay(100);
   }
-  
+
 }
 
 void loop()
@@ -53,19 +53,19 @@ void loop()
   }
   else
   {
-    digitalWrite(LEDPIN, HIGH); 
-    
+    digitalWrite(LEDPIN, HIGH);
+
     Serial.println((byte)t);
     Serial.println((byte)h);
     TX_buffer[0] = (byte)t;
     TX_buffer[1] = (byte)h;
     ELECHOUSE_cc1101.SendData(TX_buffer, 2);
-    digitalWrite(LEDPIN, LOW); 
-    
+    digitalWrite(LEDPIN, LOW);
+
     Serial.println("Send ok");
   }
 
-  
+
 
 
 }
