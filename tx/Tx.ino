@@ -4,16 +4,23 @@
 
 const int LEDPIN  =  A0;
 
+int packetCount = 0;
+
 #define DHTPIN 5
 #define DHTTYPE DHT21
 DHT dht(DHTPIN, DHTTYPE);
 
-#define size 3
+#define size 4
+
+float h = 0;
+float t = 0;
 
 int counter = 0;
 
 byte TX_buffer[size] = {0};
 byte i;
+
+unsigned long thistime = 0;
 
 void setup()
 {
@@ -43,29 +50,47 @@ void setup()
 
 void loop()
 {
-  delay(2000);
-  float h = dht.readHumidity();
-  float t = dht.readTemperature();
-
   if (isnan(h) || isnan(t)) {
     Serial.println("Failed to read from DHT sensor!");
     return;
   }
   else
   {
+    ELECHOUSE_cc1101.Init();
+
+
     digitalWrite(LEDPIN, HIGH);
 
     Serial.println((byte)t);
     Serial.println((byte)h);
     TX_buffer[0] = (byte)t;
     TX_buffer[1] = (byte)h;
-    ELECHOUSE_cc1101.SendData(TX_buffer, 2);
+    TX_buffer[2] = (byte)packetCount++;
+    ELECHOUSE_cc1101.SendData(TX_buffer, 3);
+    delay(1000);
+    ELECHOUSE_cc1101.SendData(TX_buffer, 3);
+    delay(1000);
+    ELECHOUSE_cc1101.SendData(TX_buffer, 3);
+
+    
+
     digitalWrite(LEDPIN, LOW);
 
     Serial.println("Send ok");
   }
 
+  while (millis() - thistime < 900000)
+  {
+   
+  }
 
+  thistime=millis();
 
+   h = dht.readHumidity();
+   t = dht.readTemperature();
 
+   delay(1000);
+
+   
+   
 }
